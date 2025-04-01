@@ -24,7 +24,24 @@ public class PrefixTree {
      * @param word
      */
     public void add(String word){
-        //TODO: complete me
+        TreeNode currTreeNode = root;
+        TreeNode nextTreeNode = new TreeNode();
+        for(int i = 0; i < word.length(); i++) {
+            char letter = word.charAt(i);
+            Map<Character, TreeNode> children = currTreeNode.children;
+            if(children.containsKey(letter)) {
+                currTreeNode = children.get(letter);
+            } else {
+                nextTreeNode.letter = letter;
+                children.put(letter, nextTreeNode);
+                currTreeNode = children.get(letter);
+                nextTreeNode = new TreeNode();
+            }
+            if(i == word.length() - 1 && !currTreeNode.isWord) {
+                currTreeNode.isWord = true;
+                size++;
+            }
+        }
     }
 
     /**
@@ -33,7 +50,17 @@ public class PrefixTree {
      * @return true if contained in the tree.
      */
     public boolean contains(String word){
-        //TODO: complete me
+        TreeNode currTreeNode = root;
+        for(int i = 0; i < word.length(); i++) {
+            char letter = word.charAt(i);
+            Map<Character, TreeNode> children = currTreeNode.children;
+            if(children.containsKey(letter)) {
+                if(i == word.length() - 1 && children.get(letter).isWord) {
+                    return true;
+                }
+                currTreeNode = children.get(letter);
+            }
+        }
         return false;
     }
 
