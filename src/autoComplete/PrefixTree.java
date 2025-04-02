@@ -55,9 +55,7 @@ public class PrefixTree {
             char letter = word.charAt(i);
             Map<Character, TreeNode> children = currTreeNode.children;
             if(children.containsKey(letter)) {
-                if(i == word.length() - 1 && children.get(letter).isWord) {
-                    return true;
-                }
+                if (i == word.length() - 1 && children.get(letter).isWord) return true;
                 currTreeNode = children.get(letter);
             }
         }
@@ -71,8 +69,35 @@ public class PrefixTree {
      * @return list of words with prefix
      */
     public ArrayList<String> getWordsForPrefix(String prefix){
-        //TODO: complete me
-        return null;
+        ArrayList<String> prefixOutput = new ArrayList<>();
+        TreeNode currTreeNode = root;
+        for(int i = 0; i < prefix.length(); i++) {
+            char letter = prefix.charAt(i);
+            Map<Character, TreeNode> children = currTreeNode.children;
+            if(children.containsKey(letter)) {
+                currTreeNode = children.get(letter);
+            } else {
+                return prefixOutput;
+            }
+        }
+        preOrderTraversalRecursive(currTreeNode, prefixOutput, new StringBuilder(prefix));
+        return prefixOutput;
+    }
+
+    /*
+     * Helper method to recursively call each children of a node and build a string. If that string is a word, add it to the prefix output.
+     */
+    public void preOrderTraversalRecursive(TreeNode input, ArrayList<String> inputList, StringBuilder sb) {
+        if(!input.children.isEmpty()) {
+            for(Map.Entry<Character, TreeNode> entry : input.children.entrySet()) {
+                sb.append(entry.getKey());
+                preOrderTraversalRecursive(entry.getValue(), inputList, sb);
+            }
+        }
+        if(input.isWord) {
+            inputList.add(sb.toString());
+        }
+        sb.deleteCharAt(sb.length() - 1);
     }
 
     /**
